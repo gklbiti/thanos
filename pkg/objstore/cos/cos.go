@@ -62,7 +62,7 @@ func NewBucket(logger log.Logger, conf []byte, component string) (*Bucket, error
 		return nil, errors.Wrap(err, "validate cos configuration")
 	}
 
-	bucketUrl := cos.NewBucketURL(config.Bucket, config.AppId, config.Region, true)
+	bucketUrl := cos.NewBucketURL(config.Bucket, config.AppId, config.Region, false)
 
 	b, err := cos.NewBaseURL(bucketUrl.String())
 	if err != nil {

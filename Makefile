@@ -13,8 +13,12 @@ TMP_GOPATH        ?= /tmp/thanos-go
 GOBIN             ?= $(firstword $(subst :, ,${GOPATH}))/bin
 GO111MODULE       ?= on
 export GO111MODULE
-GOPROXY           ?= https://proxy.golang.org
+GOPROXY           ?= https://goproxy.cn,direct
+GOOS              ?= linux
+GOARCH            ?= amd64
 export GOPROXY
+export GOOS
+export GOARCH
 
 # Tools.
 EMBEDMD           ?= $(GOBIN)/embedmd-$(EMBEDMD_VERSION)
