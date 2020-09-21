@@ -113,7 +113,9 @@ require (
 replace (
 	// Mitigation for: https://github.com/Azure/go-autorest/issues/414
 	github.com/Azure/go-autorest => github.com/Azure/go-autorest v12.3.0+incompatible
-	github.com/mozillazg/go-cos v0.13.0 => github.com/gklbiti/go-cos v0.13.1-0.20200907055950-e1a7c69ccf1c
+	// github.com/mozillazg/go-cos v0.13.0 => github.com/gklbiti/go-cos v0.13.1-0.20200907055950-e1a7c69ccf1c
+	// github.com/mozillazg/go-cos v0.13.0 => github.com/gklbiti/cos-go-sdk-v5 v0.7.9-0.20200914063454-d6f61d58e46a
+	github.com/mozillazg/go-cos v0.13.0 => github.com/tencentyun/cos-go-sdk-v5 v0.7.9
 	k8s.io/api => k8s.io/api v0.0.0-20190620084959-7cf5895f2711
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.0.0-20190620085554-14e95df34f1f
 	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20190612205821-1799e75a0719

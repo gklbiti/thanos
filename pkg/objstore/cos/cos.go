@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"testing"
@@ -62,12 +64,13 @@ func NewBucket(logger log.Logger, conf []byte, component string) (*Bucket, error
 		return nil, errors.Wrap(err, "validate cos configuration")
 	}
 
-	bucketUrl := cos.NewBucketURL(config.Bucket, config.AppId, config.Region, false)
-
-	b, err := cos.NewBaseURL(bucketUrl.String())
-	if err != nil {
-		return nil, errors.Wrap(err, "initialize cos base url")
-	}
+	//bucketUrl := cos.NewBucketURL(config.Bucket, config.Region, false)
+	//b, err := cos.BaseURL{bucketUrl.String()}
+	//if err != nil {
+	//	return nil, errors.Wrap(err, "initialize cos base url")
+	//}
+	bucketUrl, _ := url.Parse("http://" + config.Bucket + ".cos.shanghai.tce.yonghuicloud.cn")
+	b := &cos.BaseURL{BucketURL: bucketUrl}
 
 	client := cos.NewClient(b, &http.Client{
 		Transport: &cos.AuthorizationTransport{
@@ -108,11 +111,31 @@ func (b *Bucket) ObjectSize(ctx context.Context, name string) (uint64, error) {
 	return 0, errors.New("content-length header not found")
 }
 
+func getFileSize(filename string) int64 {
+	var result int64
+	filepath.Walk(filename, func(path string, f os.FileInfo, err error) error {
+		result = f.Size()
+		return nil
+	})
+	return result
+}
+
 // Upload the contents of the reader as an object into the bucket.
 func (b *Bucket) Upload(ctx context.Context, name string, r io.Reader) error {
-	if _, err := b.client.Object.Put(ctx, name, r, nil); err != nil {
+	file := r.(*os.File)
+	fileName := file.Name()
+	opt := &cos.ObjectPutOptions{
+		ObjectPutHeaderOptions: &cos.ObjectPutHeaderOptions{
+			ContentType:   "text/html",
+			ContentLength: int(getFileSize(fileName)),
+		},
+	}
+	if _, err := b.client.Object.PutFromFile(ctx, name, fileName, opt); err != nil {
 		return errors.Wrap(err, "upload cos object")
 	}
+	//if _, err := b.client.Object.Put(ctx, name, r, nil); err != nil {
+	//	return errors.Wrap(err, "upload cos object")
+	//}
 	return nil
 }
 
